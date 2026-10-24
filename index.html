@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>three-bits — small three.js snippets</title>
+    <meta name="description" content="A gallery of small, complete, copyable three.js snippets. No build step." />
+    <style>
+      :root {
+        --bg: #101418;
+        --card: #171d24;
+        --border: #27313d;
+        --text: #eef2f6;
+        --muted: #8b99a8;
+        --accent: #5ab0e0;
+      }
+      * { margin: 0; box-sizing: border-box; }
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+      }
+      header { max-width: 1080px; margin: 0 auto; padding: 56px 20px 32px; }
+      header h1 { font-size: 28px; }
+      header h1 span { color: var(--accent); }
+      header p { color: var(--muted); margin-top: 8px; max-width: 560px; line-height: 1.6; }
+      .grid {
+        max-width: 1080px; margin: 0 auto; padding: 0 20px 64px;
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px;
+      }
+      .card {
+        background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+        padding: 20px; cursor: pointer; text-align: left; color: var(--text);
+        transition: border-color 0.15s, transform 0.15s;
+        font: inherit;
+      }
+      .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+      .card h2 { font-size: 16px; margin-bottom: 6px; }
+      .card p { color: var(--muted); font-size: 13px; line-height: 1.5; }
+      .card .tag { font-size: 11px; color: var(--accent); margin-top: 12px; display: inline-block; background: rgba(90,176,224,0.1); padding: 2px 10px; border-radius: 999px; }
+      footer { text-align: center; color: var(--muted); font-size: 13px; padding: 0 20px 48px; }
+      footer a { color: var(--muted); }
+
+      /* viewer overlay */
+      .viewer {
+        position: fixed; inset: 0; background: rgba(8, 10, 13, 0.92);
+        display: none; z-index: 50;
+      }
+      .viewer.open { display: flex; }
+      .viewer-inner {
+        margin: auto; width: min(1160px, 94vw); height: min(680px, 88vh);
+        display: grid; grid-template-columns: 1.2fr 1fr; gap: 0;
+        background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+      }
+      .stage { position: relative; background: #0a0d10; }
+      .stage canvas { width: 100%; height: 100%; display: block; }
+      .stage .title {
+        position: absolute; top: 14px; left: 16px;
+        font-size: 14px; font-weight: 600;
+      }
+      .stage .hint {
+        position: absolute; bottom: 12px; left: 16px;
+        font-size: 12px; color: var(--muted);
+      }
+      .code { position: relative; overflow: hidden; display: flex; flex-direction: column; }
+      .code pre {
+        flex: 1; overflow: auto; padding: 18px; margin: 0;
+        font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace;
+        color: #c9d6e2;
+      }
+      .codebar {
+        display: flex; gap: 8px; align-items: center; justify-content: flex-end;
+        padding: 10px 14px; border-top: 1px solid var(--border);
+      }
+      .btn {
+        background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+        color: var(--text); padding: 8px 14px; font-size: 13px; cursor: pointer; font-weight: 600;
+      }
+      .btn:hover { border-color: var(--accent); }
+      .close {
+        position: absolute; top: 12px; right: 12px; z-index: 2;
+        width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border);
+        background: rgba(0,0,0,0.5); color: var(--text); font-size: 16px; cursor: pointer;
+      }
+      @media (max-width: 800px) {
+        .viewer-inner { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <header>
+      <h1>three<span>-bits</span></h1>
+      <p>Small, complete, copyable three.js snippets. Every card is one self-contained file — click it, watch it run, take the code. No build step, three.js comes from a CDN importmap.</p>
+    </header>
+    <div class="grid" id="grid"></div>
+    <footer>made by <a href="https://github.com/Gejogames">Gejogames</a> · MIT · <a href="https://github.com/Gejogames/three-bits">source</a></footer>
+
+    <div class="viewer" id="viewer">
+      <div class="viewer-inner">
+        <button class="close" id="close" aria-label="Close">✕</button>
+        <div class="stage">
+          <div class="title" id="v-title"></div>
+          <canvas id="v-canvas"></canvas>
+          <div class="hint" id="v-hint"></div>
+        </div>
+        <div class="code">
+          <pre id="v-code"></pre>
+          <div class="codebar">
+            <button class="btn" id="copy">Copy code</button>
+            <button class="btn" id="raw">Open raw file</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
